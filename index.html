@@ -131,13 +131,24 @@ fetch("https://script.google.com/macros/s/AKfycbwB6fn1HqUhgxg-8CF-MrICeaO41TzdRk
   },
   body: JSON.stringify({ email, question })
 })
-.then(() => {
-alert("✅ Your question was submitted successfully!");
-localStorage.clear();
-location.reload(); // reloads page for next user
+.then(response => {
+  if (!response.ok) throw new Error("Network error");
+  return response.json();
 })
-.catch(() => alert("Failed to submit. Please try again."));
+.then(data => {
+  if (data.result === "success") {
+    alert("✅ Your question was submitted successfully!");
+    localStorage.clear();
+    location.reload();
+  } else {
+    alert("❌ Submission failed. Server error.");
+  }
+})
+.catch((error) => {
+  console.error("Submission error:", error);
+  alert("❌ Failed to submit. Please try again.");
 });
+
 
 window.onload = () => {
 const email = localStorage.getItem("email");
