@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Ask Me Anything</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet"/>
+<style>
+body {
+font-family: 'Roboto', sans-serif;
+background: #f4f4f4;
+margin: 0;
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+min-height: 100vh;
+padding: 20px;
+}
+
+.box {
+background: white;
+padding: 30px;
+border-radius: 10px;
+box-shadow: 0 0 15px rgba(0,0,0,0.1);
+width: 100%;
+max-width: 400px;
+margin-bottom: 20px;
+}
+
+h2 {
+text-align: center;
+color: #333;
+}
+
+input, textarea, button {
+width: 100%;
+margin: 10px 0;
+padding: 12px;
+font-size: 15px;
+}
+
+button {
+background: #008CBA;
+color: white;
+border: none;
+cursor: pointer;
+}
+
+button:disabled {
+background: #aaa;
+cursor: not-allowed;
+}
+
+.note {
+font-size: 13px;
+color: #888;
+text-align: center;
+margin-bottom: 10px;
+}
+
+.content {
+background: white;
+      padding: 15px 20px;
+      padding: 15px 15px;
+border-radius: 10px;
+box-shadow: 0 0 10px rgba(0,0,0,0.1);
+max-width: 850px;
+width: 100%;
+text-align: center;
+font-size: 15px;
+line-height: 1.6;
+}
+</style>
+</head>
+<body>
+
+<div class="box">
+<div style="text-align: center;">
+<img src="logo.jpg" alt="S&P Pharma Logo" style="max-width: 150px; height: auto; margin-bottom: 10px;">
+<h2>Ask Me Anything</h2>
+</div>
+
+<input type="email" id="email" placeholder="Enter your email" required />
+<textarea id="question" rows="4" placeholder="Enter your question" required></textarea>
+<button id="payBtn">Pay ₹30 </button>
+<div class="note">After payment, return to this page to submit your question.</div>
+<button id="submitBtn" disabled>Submit Question</button>
+</div>
+
+<div class="content">
+<h3><u><strong> About this Website </strong></u></h3>
+<p>This trusted platform allows you to ask any questions about pharmaceutical Industry and Regulatory bodies.<br> 
+For a small fee, you can securely submit your question, a reliable and accurate response will be delivered to your email.</p>
+</div>
+
+<script>
+const payBtn = document.getElementById("payBtn");
+const submitBtn = document.getElementById("submitBtn");
+
+payBtn.addEventListener("click", () => {
+const email = document.getElementById("email").value.trim();
+const question = document.getElementById("question").value.trim();
+
+if (!email || !question) {
+alert("Please fill in both fields before proceeding to payment.");
+return;
+}
+
+localStorage.setItem("email", email);
+localStorage.setItem("question", question);
+localStorage.setItem("paymentStarted", "true");
+
+window.open("https://rzp.io/rzp/PDQNH98c", "_blank");
+});
+
+submitBtn.addEventListener("click", () => {
+const email = localStorage.getItem("email");
+const question = localStorage.getItem("question");
+
+if (!email || !question) {
+alert("Missing email or question.");
+return;
+}
+
+// ✅ Remove mode: "no-cors"
+fetch("https://script.google.com/macros/s/AKfycbwPHOGx2HHtIUSVXOMxvBR1LqVrtYu0xqfMXhtAOnZdm-NmAk2-qQVHLQZoBu7iyh7o/exec", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({ email, question })
+})
+.then(() => {
+alert("✅ Your question was submitted successfully!");
+localStorage.clear();
+location.reload(); // reloads page for next user
+})
+.catch(() => alert("Failed to submit. Please try again."));
+});
+
+window.onload = () => {
+const email = localStorage.getItem("email");
+const question = localStorage.getItem("question");
+const paymentStarted = localStorage.getItem("paymentStarted") === "true";
+
+if (email && question && paymentStarted) {
+document.getElementById("email").value = email;
+document.getElementById("question").value = question;
+submitBtn.disabled = false;
+} else {
+localStorage.clear();
+document.getElementById("email").value = '';
+document.getElementById("question").value = '';
+submitBtn.disabled = true;
+}
+};
+</script>
+
+</body>
+</html>
