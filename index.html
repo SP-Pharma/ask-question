@@ -124,12 +124,16 @@ submitBtn.addEventListener("click", () => {
     return;
   }
 
+  const formData = new URLSearchParams();
+  formData.append("email", email);
+  formData.append("question", question);
+
   fetch("https://script.google.com/macros/s/AKfycbwB6fn1HqUhgxg-8CF-MrICeaO41TzdRkKK7cRpKkhej0v5RERtyF1O_obpU581kVVfeA/exec", {
     method: "POST",
     headers: {
-      "Content-Type": "application/json"
+      "Content-Type": "application/x-www-form-urlencoded"
     },
-    body: JSON.stringify({ email, question })
+    body: formData.toString()
   })
   .then(response => {
     if (!response.ok) throw new Error("Network error");
